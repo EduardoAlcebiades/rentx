@@ -1,0 +1,86 @@
+### Abreviações
+
+- **RF** - Requisitos Funcionais
+- **RNF** - Requisitos Não Funcionais
+- **RN** - Regras de Negócio
+
+# Carro
+
+## Cadastro de Carro
+
+- **RF**
+
+  - Deve ser possível cadastrar um novo carro.
+
+- **RNF**
+
+  - Não deve ser possível cadastrar um carro quando a categoria não for um uuid válido.
+
+- **RN**
+
+  - Não deve ser possível cadastrar um carro com uma placa já existente.
+  - O carro deve ser cadastrado com disponibilidade ativa por padrão.
+  - Somente usuários administradores poderão realizar cadastros.
+
+## Listagem de Carros
+
+- **RF**
+
+  - Deve ser possível listar todos os carros disponíveis.
+  - Deve ser possível listar todos os carros disponíveis pelo nome da categoria.
+  - Deve ser possível listar todos os carros disponíveis pelo nome da marca.
+  - Deve ser possível listar todos os carros disponíveis pelo nome do carro.
+
+- **RNF**
+
+  - Não deve ser possível filtrar os carros quando o filtro de categoria não for um uuid válido.
+
+- **RN**
+
+  - O usuário não precisa estar autenticado no sistema.
+
+# Especificação
+
+## Cadastro de Especificação do Carro
+
+- **RF**
+
+  - Deve ser possível cadastrar uma especificação para um carro.
+  - Somente usuários administradores poderão realizar cadastros.
+
+- **RN**
+
+  - Não deve ser possível cadastrar uma especificação para um carro não cadastrado.
+  - Não deve ser possível cadastrar uma especificação já existente para o mesmo carro.
+
+# Imagem do Carro
+
+## Cadastro de Imagens do Carro
+
+- **RF**
+
+  - Deve ser possível cadastrar a imagens do carro.
+
+- **RNF**
+
+  - Utilizar o Multer para upload dos arquivos.
+
+- **RN**
+
+  - Deve ser possível o cadastro de várias imagens para o mesmo carro.
+  - Somente usuários administradores poderão realizar cadastros.
+
+# Aluguel
+
+## Registro de Aluguel
+
+- **RF**
+
+  - Deve ser possível cadastrar um aluguel.
+
+- **RN**
+
+  - O aluguel deve ter duração mínima de 24h.
+  - Não deve ser possível cadastrar um aluguel caso já exista um em aberto para o mesmo usuário.
+  - Não deve ser possível cadastrar um aluguel caso já exista um em aberto para o mesmo carro.
+  - O usuário deve estar logado
