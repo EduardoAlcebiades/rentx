@@ -36,8 +36,14 @@ describe('Create Category', () => {
   it('should not be able to create multiple categories with the same name', async () => {
     await createCategoryService.execute(category);
 
-    expect(async () => {
+    expect.assertions(3);
+
+    try {
       await createCategoryService.execute(category);
-    }).rejects.toBeInstanceOf(AppError);
+    } catch (err: unknown) {
+      expect(err).toBeInstanceOf(AppError);
+      expect(err).toHaveProperty('message');
+      expect((err as AppError).statusCode).toBe(409);
+    }
   });
 });

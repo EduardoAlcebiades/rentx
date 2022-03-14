@@ -12,7 +12,7 @@ import { connect } from '../typeorm';
 import { errorHandler } from './middlewares/errorHandler';
 import { routes } from './routes';
 
-connect()
+connect('localhost')
   .then(() => console.log('Database connected successful!'))
   .catch(err => console.error(err));
 

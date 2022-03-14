@@ -10,6 +10,7 @@ interface ICarsRepository {
     category_id?: string,
   ): Promise<Car[]>;
   create(data: ICreateCarDTO): Promise<Car>;
+  turnAvailable(id: string, is_available: boolean): Promise<void>;
 }
 
 export { ICarsRepository };

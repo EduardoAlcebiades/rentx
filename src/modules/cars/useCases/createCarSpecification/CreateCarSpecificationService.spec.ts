@@ -64,26 +64,44 @@ describe('Create Car Specification', () => {
     const car_id = uuidV4();
     const specificationIds = [uuidV4()];
 
-    expect(async () => {
+    expect.assertions(3);
+
+    try {
       await createCarSpecificationService.execute({ car_id, specificationIds });
-    }).rejects.toBeInstanceOf(AppError);
+    } catch (err: unknown) {
+      expect(err).toBeInstanceOf(AppError);
+      expect(err).toHaveProperty('message');
+      expect((err as AppError).statusCode).toBe(404);
+    }
   });
 
-  it('should not be able to add a new specification in the car when the car_id was a not valid uuid', () => {
+  it('should not be able to add a new specification in the car when the car_id was a not valid uuid', async () => {
     const car_id = '1234';
     const specificationIds = [uuidV4()];
 
-    expect(async () => {
+    expect.assertions(3);
+
+    try {
       await createCarSpecificationService.execute({ car_id, specificationIds });
-    }).rejects.toBeInstanceOf(AppError);
+    } catch (err: unknown) {
+      expect(err).toBeInstanceOf(AppError);
+      expect(err).toHaveProperty('message');
+      expect((err as AppError).statusCode).toBe(400);
+    }
   });
 
-  it('should not be able to add a new specification in the car when the specificationIds contains a not valid uuid', () => {
+  it('should not be able to add a new specification in the car when the specificationIds contains a not valid uuid', async () => {
     const car_id = uuidV4();
     const specificationIds = [uuidV4(), '4321', uuidV4()];
 
-    expect(async () => {
+    expect.assertions(3);
+
+    try {
       await createCarSpecificationService.execute({ car_id, specificationIds });
-    }).rejects.toBeInstanceOf(AppError);
+    } catch (err: unknown) {
+      expect(err).toBeInstanceOf(AppError);
+      expect(err).toHaveProperty('message');
+      expect((err as AppError).statusCode).toBe(400);
+    }
   });
 });

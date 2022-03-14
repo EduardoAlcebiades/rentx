@@ -1,13 +1,19 @@
 import { decode } from 'jsonwebtoken';
 
+import { IDateProvider } from '../../../../shared/container/providers/DateProvider/IDateProvider';
+import { DayjsDateProvider } from '../../../../shared/container/providers/DateProvider/implementations/DayjsDateProvider';
 import { AppError } from '../../../../shared/errors/AppError';
 import { ICreateUserDTO } from '../../dtos/ICreateUserDTO';
 import { UsersRepositoryInMemory } from '../../repositories/inMemory/UsersRepositoryInMemory';
+import { UserTokensRepositoryInMemory } from '../../repositories/inMemory/UserTokensRepositoryInMemory';
 import { IUsersRepository } from '../../repositories/IUsersRepository';
+import { IUserTokensRepository } from '../../repositories/IUserTokensRepository';
 import { CreateUserService } from '../createUser/CreateUserService';
 import { AuthenticateUserService } from './AuthenticateUserService';
 
 let usersRepository: IUsersRepository;
+let userTokensRepository: IUserTokensRepository;
+let dateProvider: IDateProvider;
 let authenticateUserService: AuthenticateUserService;
 let createUserService: CreateUserService;
 
@@ -21,7 +27,13 @@ describe('Authenticate User', () => {
 
   beforeEach(async () => {
     usersRepository = new UsersRepositoryInMemory();
-    authenticateUserService = new AuthenticateUserService(usersRepository);
+    userTokensRepository = new UserTokensRepositoryInMemory();
+    dateProvider = new DayjsDateProvider();
+    authenticateUserService = new AuthenticateUserService(
+      usersRepository,
+      userTokensRepository,
+      dateProvider,
+    );
     createUserService = new CreateUserService(usersRepository);
   });
 
@@ -41,23 +53,35 @@ describe('Authenticate User', () => {
     expect(result.user.email).toEqual(user.email);
   });
 
-  it('should not be able to authenticate a non existent user', () => {
-    expect(async () => {
+  it('should not be able to authenticate a non existent user', async () => {
+    expect.assertions(3);
+
+    try {
       await authenticateUserService.execute({
         email: user.email,
         password: user.password,
       });
-    }).rejects.toBeInstanceOf(AppError);
+    } catch (err: unknown) {
+      expect(err).toBeInstanceOf(AppError);
+      expect(err).toHaveProperty('message');
+      expect((err as AppError).statusCode).toBe(401);
+    }
   });
 
   it('should not be able to authenticate a user with wrong password', async () => {
     await createUserService.execute(user);
 
-    expect(async () => {
+    expect.assertions(3);
+
+    try {
       await authenticateUserService.execute({
         email: user.email,
         password: `worng${user.password}`,
       });
-    }).rejects.toBeInstanceOf(AppError);
+    } catch (err: unknown) {
+      expect(err).toBeInstanceOf(AppError);
+      expect(err).toHaveProperty('message');
+      expect((err as AppError).statusCode).toBe(401);
+    }
   });
 });

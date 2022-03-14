@@ -1,3 +1,4 @@
+import { AppError } from '../../../../shared/errors/AppError';
 import { ICreateCarDTO } from '../../dtos/ICreateCarDTO';
 import { Car } from '../../infra/typeorm/entities/Car';
 import { ICarsRepository } from '../ICarsRepository';
@@ -56,12 +57,21 @@ class CarsRepositoryInMemory implements ICarsRepository {
       fine_amount,
       brand,
       category_id,
+      is_available: true,
       created_at: new Date(),
     });
 
     this.cars.push(car);
 
     return car;
+  }
+
+  async turnAvailable(id: string, is_available: boolean): Promise<void> {
+    const index = this.cars.findIndex(car => car.id === id);
+
+    if (index < 0) throw new AppError('Car not found', 404);
+
+    this.cars[index].is_available = is_available;
   }
 }
 

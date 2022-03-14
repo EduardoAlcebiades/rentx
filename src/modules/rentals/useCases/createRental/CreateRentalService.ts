@@ -18,7 +18,7 @@ class CreateRentalService {
     private usersRepository: IUsersRepository,
     @inject('CarsRepository')
     private carsRepository: ICarsRepository,
-    @inject('DateProvider')
+    @inject('DayjsDateProvider')
     private dateProvider: IDateProvider,
   ) {}
 
@@ -68,6 +68,8 @@ class CreateRentalService {
       car_id,
       user_id,
     });
+
+    await this.carsRepository.turnAvailable(car_id, false);
 
     return rental;
   }

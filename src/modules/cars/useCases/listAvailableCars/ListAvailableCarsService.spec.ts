@@ -10,7 +10,7 @@ import { ListAvailableCarsService } from './ListAvailableCarsService';
 let listAvailableCarsService: ListAvailableCarsService;
 let carsRepository: ICarsRepository;
 
-describe('List Cars', () => {
+describe('List Available Cars', () => {
   const carAvailables: ICreateCarDTO[] = [
     {
       name: 'Sample 1',
@@ -96,9 +96,15 @@ describe('List Cars', () => {
     expect(cars).toEqual([createdCar]);
   });
 
-  it('should not be able to list when category_id was not a valid uuid', () => {
-    expect(async () => {
+  it('should not be able to list when category_id was not a valid uuid', async () => {
+    expect.assertions(3);
+
+    try {
       await listAvailableCarsService.execute({ category_id: '1234' });
-    }).rejects.toBeInstanceOf(AppError);
+    } catch (err: unknown) {
+      expect(err).toBeInstanceOf(AppError);
+      expect(err).toHaveProperty('message');
+      expect((err as AppError).statusCode).toBe(400);
+    }
   });
 });

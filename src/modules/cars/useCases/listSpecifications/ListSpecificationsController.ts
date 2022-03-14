@@ -11,7 +11,7 @@ class ListSpecificationsController {
 
     const specifications = await listSpecificationsService.execute();
 
-    return response.status(200).json(specifications);
+    return response.json(specifications);
   }
 }
 

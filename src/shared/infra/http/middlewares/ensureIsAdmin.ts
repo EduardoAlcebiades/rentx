@@ -13,7 +13,7 @@ async function ensureIsAdmin(
   const usersRepository = new UsersRepository();
   const user = await usersRepository.findById(id);
 
-  if (!user.is_admin) throw new AppError('Unauthorized', 401);
+  if (!user.is_admin) throw new AppError('Unauthorized', 403);
 
   next();
 }

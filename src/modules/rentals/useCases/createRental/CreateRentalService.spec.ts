@@ -63,10 +63,12 @@ describe('Create Rental', () => {
     };
 
     const createdRental = await createRentalService.execute(rental);
+    const rentalCar = await carsRepository.findById(createdCar.id);
 
     expect(createdRental.car_id).toBe(createdCar.id);
     expect(createdRental.user_id).toBe(createdUser.id);
     expect(createdRental).toHaveProperty('start_date');
+    expect(rentalCar.is_available).toBe(false);
   });
 
   it('should not be able to create a new rental when the car_id was a not valid uuid', async () => {
@@ -77,9 +79,15 @@ describe('Create Rental', () => {
       user_id: createdUser.id,
     };
 
-    expect(async () => {
+    expect.assertions(3);
+
+    try {
       await createRentalService.execute(rental);
-    }).rejects.toBeInstanceOf(AppError);
+    } catch (err: unknown) {
+      expect(err).toBeInstanceOf(AppError);
+      expect(err).toHaveProperty('message');
+      expect((err as AppError).statusCode).toBe(400);
+    }
   });
 
   it('should not be able to create a new rental when the user_id was a not valid uuid', async () => {
@@ -90,9 +98,15 @@ describe('Create Rental', () => {
       user_id: '1234',
     };
 
-    expect(async () => {
+    expect.assertions(3);
+
+    try {
       await createRentalService.execute(rental);
-    }).rejects.toBeInstanceOf(AppError);
+    } catch (err: unknown) {
+      expect(err).toBeInstanceOf(AppError);
+      expect(err).toHaveProperty('message');
+      expect((err as AppError).statusCode).toBe(400);
+    }
   });
 
   it('should not be able to create a new rental when user does not exist', async () => {
@@ -103,9 +117,15 @@ describe('Create Rental', () => {
       user_id: uuidV4(),
     };
 
-    expect(async () => {
+    expect.assertions(3);
+
+    try {
       await createRentalService.execute(rental);
-    }).rejects.toBeInstanceOf(AppError);
+    } catch (err: unknown) {
+      expect(err).toBeInstanceOf(AppError);
+      expect(err).toHaveProperty('message');
+      expect((err as AppError).statusCode).toBe(404);
+    }
   });
 
   it('should not be able to create a new rental when car does not exist', async () => {
@@ -116,9 +136,15 @@ describe('Create Rental', () => {
       user_id: createdUser.id,
     };
 
-    expect(async () => {
+    expect.assertions(3);
+
+    try {
       await createRentalService.execute(rental);
-    }).rejects.toBeInstanceOf(AppError);
+    } catch (err: unknown) {
+      expect(err).toBeInstanceOf(AppError);
+      expect(err).toHaveProperty('message');
+      expect((err as AppError).statusCode).toBe(404);
+    }
   });
 
   it('should not be able to create a new rental when the car already has one rental active', async () => {
@@ -139,13 +165,19 @@ describe('Create Rental', () => {
       email: 'sample2@email.com',
     });
 
-    expect(async () => {
+    expect.assertions(3);
+
+    try {
       await createRentalService.execute({
         expected_return_date,
         car_id: createdCar.id,
         user_id: createdUser2.id,
       });
-    }).rejects.toBeInstanceOf(AppError);
+    } catch (err: unknown) {
+      expect(err).toBeInstanceOf(AppError);
+      expect(err).toHaveProperty('message');
+      expect((err as AppError).statusCode).toBe(409);
+    }
   });
 
   it('should not be able to create a new rental when the user already has one rental active', async () => {
@@ -166,13 +198,19 @@ describe('Create Rental', () => {
       license_plate: 'ABC-4321',
     });
 
-    expect(async () => {
+    expect.assertions(3);
+
+    try {
       await createRentalService.execute({
         expected_return_date,
         car_id: createdCar2.id,
         user_id: createdUser.id,
       });
-    }).rejects.toBeInstanceOf(AppError);
+    } catch (err: unknown) {
+      expect(err).toBeInstanceOf(AppError);
+      expect(err).toHaveProperty('message');
+      expect((err as AppError).statusCode).toBe(409);
+    }
   });
 
   it('should not be able to create a new rental when expect_return_date was less than 24 hours', async () => {
@@ -184,8 +222,14 @@ describe('Create Rental', () => {
       user_id: createdUser.id,
     };
 
-    expect(async () => {
+    expect.assertions(3);
+
+    try {
       await createRentalService.execute(rental);
-    }).rejects.toBeInstanceOf(AppError);
+    } catch (err: unknown) {
+      expect(err).toBeInstanceOf(AppError);
+      expect(err).toHaveProperty('message');
+      expect((err as AppError).statusCode).toBe(400);
+    }
   });
 });

@@ -32,28 +32,32 @@ describe('Create Car', () => {
     expect(createdCar).toHaveProperty('created_at');
   });
 
-  it('should not be able to create a new car when de category_id was not a valid uuid', () => {
-    expect(async () => {
-      const parsedData: ICreateCarDTO = { ...car, category_id: '1234' };
+  it('should not be able to create a new car when de category_id was not a valid uuid', async () => {
+    const parsedData: ICreateCarDTO = { ...car, category_id: '1234' };
 
+    expect.assertions(3);
+
+    try {
       await createCarService.execute(parsedData);
-    }).rejects.toBeInstanceOf(AppError);
+    } catch (err: unknown) {
+      expect(err).toBeInstanceOf(AppError);
+      expect(err).toHaveProperty('message');
+      expect((err as AppError).statusCode).toBe(400);
+    }
   });
 
   it('should not be able to create a car with existing license plate', async () => {
     await createCarService.execute(car);
 
-    expect(async () => {
-      await createCarService.execute({
-        name: 'Sample name',
-        description: 'Sample description',
-        daily_rate: 100,
-        license_plate: car.license_plate,
-        fine_amount: 60,
-        brand: 'Sample brand',
-        category_id: null,
-      });
-    }).rejects.toBeInstanceOf(AppError);
+    expect.assertions(3);
+
+    try {
+      await createCarService.execute(car);
+    } catch (err: unknown) {
+      expect(err).toBeInstanceOf(AppError);
+      expect(err).toHaveProperty('message');
+      expect((err as AppError).statusCode).toBe(409);
+    }
   });
 
   it('should be able to create a new car with property available equals "true" by default', async () => {

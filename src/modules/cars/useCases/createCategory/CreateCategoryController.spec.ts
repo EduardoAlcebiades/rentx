@@ -85,7 +85,7 @@ describe('Create Category Controller', () => {
         description: 'Sample description',
       });
 
-    expect(response.status).toBe(401);
+    expect(response.status).toBe(403);
   });
 
   it('should not be able to create a new category when the request headers not had an authorization token', async () => {
