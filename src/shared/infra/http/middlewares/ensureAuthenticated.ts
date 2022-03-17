@@ -23,7 +23,7 @@ async function ensureAuthenticated(
 
     userId = decoded.sub as string;
   } catch (err) {
-    throw new AppError('Unauthorized', 401);
+    throw new AppError('The token is invalid or expired!', 401);
   }
 
   const usersRepository = new UsersRepository();

@@ -5,8 +5,8 @@ const authConfig = {
   },
   refreshToken: {
     secret: process.env.APP_SECRET_TWO,
-    expiresIn: '30d',
-    expiresInDays: 30,
+    expiresIn: '5d',
+    expiresInDays: 5,
   },
 };
 

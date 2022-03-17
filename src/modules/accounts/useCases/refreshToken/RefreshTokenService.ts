@@ -25,7 +25,7 @@ class RefreshTokenService {
   constructor(
     @inject('UserTokensRepository')
     private userTokensRepository: IUserTokensRepository,
-    @inject('DayjsDateProvider')
+    @inject('DateProvider')
     private dateProvider: IDateProvider,
   ) {}
 
@@ -41,7 +41,7 @@ class RefreshTokenService {
     const currentDate = this.dateProvider.currentDate();
 
     if (this.dateProvider.isBefore(userToken.expires_date, currentDate))
-      throw new AppError('Invalid refresh token!', 401);
+      throw new AppError('Token has been expired!', 401);
 
     let name: string;
     let email: string;
@@ -55,7 +55,7 @@ class RefreshTokenService {
       name = decoded.name;
       email = decoded.email;
     } catch (err) {
-      throw new AppError('Invalid refresh token!', 401);
+      throw new AppError('The token is invalid or expired!', 401);
     }
 
     const { user_id } = userToken;

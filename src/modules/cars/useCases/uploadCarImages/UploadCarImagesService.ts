@@ -1,8 +1,8 @@
 import { inject, injectable } from 'tsyringe';
 import { validate } from 'uuid';
 
+import { IStorageProvider } from '../../../../shared/container/providers/StorageProvider/IStorageProvider';
 import { AppError } from '../../../../shared/errors/AppError';
-import { deleteFile } from '../../../../utils/file';
 import { CarsRepository } from '../../infra/typeorm/repositories/CarsRepository';
 import { ICarImagesRepository } from '../../repositories/ICarImagesRepository';
 
@@ -18,6 +18,8 @@ class UploadCarImageService {
     private carImagesRepository: ICarImagesRepository,
     @inject('CarsRepository')
     private carsRepository: CarsRepository,
+    @inject('StorageProvider')
+    private storageProvider: IStorageProvider,
   ) {}
 
   async execute({ car_id, imagesName }: IRequest): Promise<void> {
@@ -30,11 +32,13 @@ class UploadCarImageService {
     const files = await this.carImagesRepository.delete(car_id);
 
     files.forEach(async file => {
-      await deleteFile(`./tmp/cars/${file}`);
+      await this.storageProvider.delete(file, 'cars');
     });
 
     imagesName.forEach(async image_name => {
-      await this.carImagesRepository.create(car_id, image_name);
+      const file = await this.storageProvider.save(image_name, 'cars');
+
+      await this.carImagesRepository.create(car_id, file);
     });
   }
 }

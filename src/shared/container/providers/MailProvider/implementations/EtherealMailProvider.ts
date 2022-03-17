@@ -6,7 +6,7 @@ import transporterConfig from '../../../../../config/transporter';
 import { ISendMailDTO } from '../dtos/ISendMailDTO';
 import { IMailProvider } from '../IMailProvider';
 
-class EtherealMailerProvider implements IMailProvider {
+class EtherealMailProvider implements IMailProvider {
   async sendMail({
     to,
     subject,
@@ -30,4 +30,4 @@ class EtherealMailerProvider implements IMailProvider {
   }
 }
 
-export { EtherealMailerProvider };
+export { EtherealMailProvider };

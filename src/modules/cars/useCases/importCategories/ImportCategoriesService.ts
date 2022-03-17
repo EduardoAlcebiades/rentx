@@ -2,7 +2,7 @@ import { parse } from 'csv-parse';
 import fs from 'fs';
 import { inject, injectable } from 'tsyringe';
 
-import { deleteFile } from '../../../../utils/file';
+import { IStorageProvider } from '../../../../shared/container/providers/StorageProvider/IStorageProvider';
 import { ICreateCategoryDTO } from '../../dtos/ICreateCategoryDTO';
 import { ICategoriesRepository } from '../../repositories/ICategoriesRepository';
 
@@ -11,6 +11,8 @@ class ImportCategoriesService {
   constructor(
     @inject('CategoriesRepository')
     private categoriesRepository: ICategoriesRepository,
+    @inject('StorageProvider')
+    private storageProvider: IStorageProvider,
   ) {}
 
   private loadCategories(
@@ -33,7 +35,8 @@ class ImportCategoriesService {
           });
         })
         .on('end', async () => {
-          await deleteFile(file.path);
+          await this.storageProvider.delete(file.path);
+
           resolve(categories);
         })
         .on('error', err => {

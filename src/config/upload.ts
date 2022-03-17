@@ -6,20 +6,18 @@ export interface IUpload {
   storage: multer.StorageEngine;
 }
 
-function upload(folder: string): IUpload {
-  const storage = multer.diskStorage({
-    destination: path.resolve(__dirname, '..', '..', folder),
-    filename: (request, file, callback) => {
-      const fileHash = crypto.randomBytes(16).toString('hex');
-      const fileName = `${fileHash}-${file.originalname}`;
+const tmpFolder = path.resolve(__dirname, '..', '..', 'tmp');
 
-      return callback(null, fileName);
-    },
-  });
+const storage = multer.diskStorage({
+  destination: tmpFolder,
+  filename: (request, file, callback) => {
+    const fileHash = crypto.randomBytes(16).toString('hex');
+    const fileName = `${fileHash}-${file.originalname}`;
 
-  return { storage };
-}
+    return callback(null, fileName);
+  },
+});
 
-const uploadConfig = { upload };
+const uploadConfig = { tmpFolder, storage };
 
 export default uploadConfig;

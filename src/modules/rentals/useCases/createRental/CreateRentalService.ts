@@ -18,7 +18,7 @@ class CreateRentalService {
     private usersRepository: IUsersRepository,
     @inject('CarsRepository')
     private carsRepository: ICarsRepository,
-    @inject('DayjsDateProvider')
+    @inject('DateProvider')
     private dateProvider: IDateProvider,
   ) {}
 

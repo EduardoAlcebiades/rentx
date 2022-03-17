@@ -18,7 +18,7 @@ class ResetPasswordService {
     private userTokensRepository: IUserTokensRepository,
     @inject('UsersRepository')
     private usersRepository: IUsersRepository,
-    @inject('DayjsDateProvider')
+    @inject('DateProvider')
     private dateProvider: IDateProvider,
   ) {}
 
@@ -30,7 +30,7 @@ class ResetPasswordService {
     const currentDate = this.dateProvider.currentDate();
 
     if (this.dateProvider.isBefore(userToken.expires_date, currentDate))
-      throw new AppError('Invalid token', 401);
+      throw new AppError('Token has been expired!', 401);
 
     const user = await this.usersRepository.findById(userToken.user_id);
 
