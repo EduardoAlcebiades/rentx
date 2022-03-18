@@ -29,7 +29,9 @@ class User {
   avatar: string | null;
 
   @Expose()
-  avatar_url(): string {
+  avatar_url(): string | null {
+    if (!this.avatar) return null;
+
     switch (process.env.DISK) {
       case 'local':
         return `http://${process.env.APP_HOST}:${process.env.APP_PORT}/avatar/${this.avatar}`;
