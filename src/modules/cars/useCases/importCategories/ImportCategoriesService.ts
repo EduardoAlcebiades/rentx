@@ -35,7 +35,7 @@ class ImportCategoriesService {
           });
         })
         .on('end', async () => {
-          await this.storageProvider.delete(file.path);
+          fs.promises.unlink(file.path);
 
           resolve(categories);
         })
