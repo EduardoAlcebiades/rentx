@@ -35,7 +35,7 @@ jobs:
           target: "~/app/rentx"
           
       - name: Update API
-        uses: appleboy/ssh-actions@master
+        uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
           port: ${{ secrets.SSH_PORT }}
